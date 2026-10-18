@@ -1,0 +1,11 @@
+{
+  "name": "mannypro-to-ebook",
+  "displayName": "Manny Pro to Ebook",
+  "version": "0.1.0",
+  "description": "把曼報 Pro 文章備份成 Markdown，再合併成 Kobo 可用的 EPUB / KEPUB（每篇一章）。需要自己的會員帳號與 mannypro-mcp。",
+  "author": { "name": "Sam Liao", "url": "https://github.com/SamLiaoP" },
+  "homepage": "https://github.com/SamLiaoP/mannypro-to-ebook",
+  "repository": "https://github.com/SamLiaoP/mannypro-to-ebook",
+  "license": "MIT",
+  "keywords": ["manny-pro", "曼報", "epub", "kobo", "kepub", "ebook"]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "mannypro-to-ebook",
+  "description": "Marketplace for the mannypro-to-ebook skill",
+  "owner": { "name": "Sam Liao", "url": "https://github.com/SamLiaoP" },
+  "plugins": [
+    {
+      "name": "mannypro-to-ebook",
+      "source": "./",
+      "description": "把曼報 Pro 文章備份成 Markdown，再合併成 Kobo 可用的 EPUB / KEPUB。"
+    }
+  ]
+}

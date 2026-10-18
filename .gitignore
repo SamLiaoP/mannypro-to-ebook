@@ -1,0 +1,11 @@
+# never commit downloaded 曼報 Pro content or built books
+articles/
+assets/
+*.epub
+*.kepub.epub
+
+# local junk
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
