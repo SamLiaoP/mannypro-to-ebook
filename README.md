@@ -5,19 +5,19 @@
 每篇文章一個章節、目錄可以直接跳章、文字可以調字級、可以畫線做筆記，文章裡的圖表和圖說都內嵌在書裡，離線也看得到。
 
 > [!IMPORTANT]
-> **⚠️ 你需要自己有《曼報 Pro》的付費會員帳號。**
+> **你需要自己有《曼報 Pro》的付費會員帳號。**
 >
 > 這個工具透過 [mannypro-mcp](https://github.com/nissenyeh/mannypro-mcp) 用**你自己的帳號**讀取文章，不會繞過付費牆，也不附帶任何帳號或文章。
 >
 > **做出來的電子書只供你個人閱讀，請不要轉載或散布付費內容。**
 >
-> 👉 還不是會員？**[訂閱《曼報 Pro》](https://pro.manny-li.com/join)**，支持作者持續產出深度內容。
+> 還不是會員？**[訂閱《曼報 Pro》](https://pro.manny-li.com/join)**，支持作者持續產出深度內容。
 >
 > 這是個人製作的**非官方工具**，與《曼報 Pro》、Manny Li、Firstory 沒有任何關係。
 
 *English: a Claude Code skill that archives your own Manny Pro subscription articles as Markdown and bundles them into a reflowable EPUB / Kobo KEPUB, one chapter per article. Requires your own paid account and [mannypro-mcp](https://github.com/nissenyeh/mannypro-mcp). For personal reading only.*
 
-## 👀 使用範例
+## 使用範例
 
 裝好之後，在 Claude Code 裡直接說：
 
@@ -47,7 +47,7 @@ AI 會比對本機已有的文章和網站清單，只抓缺的那幾篇，然�
 
 ---
 
-## 📌 第 0 步：先裝好 mannypro-mcp（必做）
+## 第 0 步：先裝好 mannypro-mcp（必做）
 
 這個 skill 只負責「抓下來之後」的事：整理檔名、縮圖、打包成書。**讀文章全靠 [mannypro-mcp](https://github.com/nissenyeh/mannypro-mcp)**，請先照它的 README 裝好、設定帳密，確認 AI 能讀到曼報全文，再回來裝這個 skill。
 
@@ -55,7 +55,7 @@ AI 會比對本機已有的文章和網站清單，只抓缺的那幾篇，然�
 
 ---
 
-## 🔒 檔案存在哪裡？會上傳嗎？
+## 檔案存在哪裡？會上傳嗎？
 
 **一句話：所有東西都只在你自己的電腦裡。這個 skill 不碰帳密、不連網站，也不會把任何檔案傳到任何地方。**
 
@@ -72,7 +72,7 @@ AI 會比對本機已有的文章和網站清單，只抓缺的那幾篇，然�
 
 ---
 
-## 🚀 最簡單的安裝方式：交給 AI 幫你裝（不用懂程式）
+## 最簡單的安裝方式：交給 AI 幫你裝（不用懂程式）
 
 **開始前：** 確認你已經完成上面的「第 0 步」。
 
@@ -125,7 +125,17 @@ cp -R mannypro-to-ebook/skills/mannypro-to-ebook <你的專案>/.claude/skills/
 /plugin install mannypro-to-ebook@mannypro-to-ebook
 ```
 
-### 1-3 選配：Pillow
+### 1-3 或把連結丟給 Claude Code / Codex
+
+在你的專案目錄打開 Claude Code 或 Codex，貼這一句：
+
+```text
+請把 https://github.com/SamLiaoP/mannypro-to-ebook 這個 skill 安裝在這個專案裡，照它 README 最後面「給 AI agent 的安裝步驟」做。
+```
+
+AI 會自己 clone、把 skill 放進專案的 skills 資料夾並測試。裝完要重新開啟 Claude Code / Codex。
+
+### 1-4 選配：Pillow
 
 縮圖預設在 macOS 用內建的 `sips`。裝了 [Pillow](https://pypi.org/project/pillow/) 會自動改用它：Linux 也能跑，而且做出來的書小兩到三成。
 
@@ -184,7 +194,7 @@ pip3 install pillow
 > 這一段是寫給 Claude Code 等 AI agent 看的：使用者請你安裝時，依序執行，每一步確認成功再進下一步。使用者多半不熟指令，請用白話跟他說明進度。
 
 1. **確認前置**：呼叫 `mcp__mannypro__login_status`。如果沒有這個工具或回傳失敗，告訴使用者要先照 https://github.com/nissenyeh/mannypro-mcp 的 README 裝好 mannypro-mcp，不要繼續。
-2. **取得 skill**：在使用者目前的專案目錄執行 `mkdir -p .claude/skills`，然後把 repo 的 `skills/mannypro-to-ebook` 複製進去（`git clone https://github.com/SamLiaoP/mannypro-to-ebook.git` 到暫存資料夾再 `cp -R`，或 clone 到 `~/mannypro-to-ebook` 後建立符號連結）。使用者若要求「所有專案都能用」，改放 `~/.claude/skills/`。
+2. **取得 skill**：在使用者目前的專案目錄執行 `mkdir -p .claude/skills`，然後把 repo 的 `skills/mannypro-to-ebook` 複製進去（`git clone https://github.com/SamLiaoP/mannypro-to-ebook.git` 到暫存資料夾再 `cp -R`，或 clone 到 `~/mannypro-to-ebook` 後建立符號連結）。使用者若要求「所有專案都能用」，改放 `~/.claude/skills/`。如果你是 Codex 或其他 agent，改放該工具讀取 skill 的資料夾（SKILL.md 格式相同）。
 3. **確認腳本可執行**：`chmod +x .claude/skills/mannypro-to-ebook/scripts/*.sh`，並執行 `python3 --version` 確認有 Python 3。macOS 不需要其他東西；Linux 請 `pip3 install pillow`。
 4. **測試**：執行 `.claude/skills/mannypro-to-ebook/scripts/list_slugs.sh <articles 資料夾>`（資料夾不存在時輸出為空是正常的）。
 5. **告訴使用者**：已經裝好；需要**重新開啟** Claude Code 才會載入 skill；附上兩三句可以直接說的範例（如「把曼報全部文章存下來，做成可以放 Kobo 的檔案」）。
@@ -202,4 +212,4 @@ pip3 install pillow
 
 我是 Sam，這個工具是我想在 Kobo 上讀《曼報 Pro》、順手做筆記時做的。有問題或建議歡迎開 issue。
 
-💻 [GitHub](https://github.com/SamLiaoP)
+[GitHub](https://github.com/SamLiaoP) · [LinkedIn](https://www.linkedin.com/in/samliaotw/)
