@@ -183,7 +183,7 @@ pip3 install pillow
 2. **抓文章**：呼叫 MCP 的 `export_articles`（`download_images: true`），每篇存成 Markdown，圖片存到 `assets/<slug>/`，圖片連結改成相對路徑。
 3. **整理檔名**：`rename_dates.sh` 把日期改成 `YYYYMMDD`。
 4. **縮圖**：`shrink_images.py` 複製一份圖片，縮到最寬 1400px（Kobo 螢幕用不到更大），大 PNG 轉 JPEG。它看檔頭判斷真實格式，因為網站有不少 `.png` 其實是 JPEG 或 WebP，直接打包會讓 EPUB 的 media-type 標錯、部分閱讀器顯示不出來。
-5. **打包**：`md2epub.py` 把 Markdown 轉成 XHTML，組成 EPUB 3（含 nav 和 NCX 兩種目錄），每篇文章一個章節，章節開頭有分類、日期和原文連結。加 `--kepub` 會把每個段落包進 `koboSpan`，這是 Kobo 原生引擎定位和記錄筆記用的。轉換器只用 Python 標準函式庫，不需要 pandoc 或 calibre；每篇轉完都會檢查 XML 合法性。
+5. **打包**：`md2epub.py` 把 Markdown 轉成 XHTML，組成 EPUB 3（含 nav 和 NCX 兩種目錄），每篇文章一個章節，章節開頭有分類、日期和原文連結。章節先按日期排，同一天的系列文再按集數排，而且會把全形（Ⅰ Ⅱ Ⅲ）和 ASCII（I II III）兩種羅馬數字都換算成數字，否則同一天發的「II」會排到「I」前面。加 `--kepub` 會把每個段落包進 `koboSpan`，這是 Kobo 原生引擎定位和記錄筆記用的。轉換器只用 Python 標準函式庫，不需要 pandoc 或 calibre；每篇轉完都會檢查 XML 合法性。
 
 網站改版或文章用了新的排版方式時，轉換可能會壞，歡迎開 issue。
 

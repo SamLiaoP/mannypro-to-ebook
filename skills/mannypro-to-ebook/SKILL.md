@@ -54,6 +54,8 @@ scripts/build_epub.sh <articles_dir> <out_dir> [--from YYYYMMDD] [--to YYYYMMDD]
 
 日期範圍取自實際納入的文章（不是今天的日期）。使用者要「只做某段期間」時用 `--from/--to`。
 
+**章節順序**：按日期排，同一天的文章再依「系列名 → 集數 → 標題」排。曼報的系列文（例如「人性套利 Ⅰ：…」「複利引擎 II：…」）常在同一天發好幾篇，而且羅馬數字有時是全形的 Ⅰ Ⅱ Ⅲ Ⅳ、有時是 ASCII 的 I II III IV，甚至同一系列兩種混用。純字串排序會變成 II、III、IV、I（因為 `I` 比 `：` 小），兩種數字混用時還會把 V 排在 Ⅳ 前面。`md2epub.py` 裡的 `chapter_key()` 會辨識「標題 數字：」這個格式、把兩種羅馬數字都換算成整數再排，所以不需要、也不要去改檔名裡的數字。沒有集數的文章照標題排在同一天裡。
+
 轉換器 `md2epub.py` 是自寫的，不依賴 pandoc 或 calibre，所以在乾淨的機器上也能跑。它已處理：標題降階（內文 `#` 變 h2，章節標題才是 h1）、鬆散清單、巢狀清單、引言、圖片＋斜體圖說、兩個空白的硬換行、CJK 行合併不加空格、`***粗斜***`、`[**](url)` 這種壞掉的連結、裸露 URL 不被斜體誤判。每篇轉完都會用 minidom 檢查 XML 合法性，壞掉會直接報錯並指出哪篇。
 
 ## 4. 交付前驗證
@@ -62,11 +64,13 @@ scripts/build_epub.sh <articles_dir> <out_dir> [--from YYYYMMDD] [--to YYYYMMDD]
 - 兩個檔案都存在，大小合理（約 0.6MB／篇）。
 - 章節數＝文章數（`unzip -l` 數 `OEBPS/text/ch*.xhtml`）。
 - 隨機抽一章看清單、圖片、連結有轉成 HTML，沒有殘留 `**`、`](`。
+- 同一天有多篇時，看 `OEBPS/nav.xhtml` 裡系列文的集數是 Ⅰ→Ⅱ→Ⅲ→Ⅳ 遞增（下面「常見狀況」有一行指令可以列出來）。
 - 提醒使用者：沒辦法在電腦上模擬 Kobo，請傳到裝置翻幾章確認。
 
 ## 常見狀況
 
 - **只要補最新幾篇**：步驟 0 比對後只匯出缺的，再跑 rename 與 build；build 會重做整本（一百多篇約一分鐘），輸出檔名的日期範圍會自動更新，舊檔案可以刪掉或保留。
 - **md2epub 報 XML error**：通常是新的 Markdown 寫法沒涵蓋。把錯誤那篇的 XHTML 印出來找不配對的標籤，修 `inline()` 或 `parse_blocks()`，不要手改文章。
+- **同一天的系列文順序亂掉**：`unzip -p <epub> OEBPS/nav.xhtml | grep -o '<a [^>]*>[^<]*' | sed 's/.*>//'` 列出目錄順序檢查。排序規則在 `md2epub.py` 的 `SERIES_RE` / `chapter_key()`；如果網站出現新的集數寫法（例如「第二部」「(2)」），在那裡加規則，不要改文章檔名。
 - **想要官方驗證**：有 `epubcheck` 可以檢查 EPUB 規範、`kepubify` 可以產生官方版 Kobo 檔，但不是必要。
 - **Podcast**：同一個 MCP 有 `list_episodes` / `download_episode` / `transcribe_episode`，不在這個流程內。

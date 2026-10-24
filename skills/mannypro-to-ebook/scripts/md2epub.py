@@ -246,9 +246,36 @@ def xhtml(title, body):
             '<link rel="stylesheet" type="text/css" href="../style.css"/></head>\n'
             f'<body>{inner}</body></html>\n')
 
+# ---------- chapter ordering ----------
+# Same-day series are titled like「人性套利 Ⅰ：…」「複利引擎 II：…」; the site mixes
+# Unicode numerals (Ⅰ-Ⅻ, U+2160…) with ASCII ones (I, II, III, IV), and a plain string
+# sort puts "II" before "I" (because 'I' < '：') and ASCII before Unicode. Sort by
+# (date, series name, numeral value, title) so parts read in order.
+_UNI_ROMAN = {chr(0x2160 + i): i + 1 for i in range(12)}
+_ASCII_ROMAN = {'I': 1, 'V': 5, 'X': 10, 'L': 50}
+SERIES_RE = re.compile(r'^(.*?)(?<![A-Za-z0-9])([IVXL]+|[\u2160-\u216b]+)\s*[：:]')
+
+def roman_value(s):
+    if all(ch in _UNI_ROMAN for ch in s):
+        return sum(_UNI_ROMAN[ch] for ch in s)
+    total, prev = 0, 0
+    for ch in reversed(s):
+        v = _ASCII_ROMAN[ch]
+        total += -v if v < prev else v
+        prev = max(prev, v)
+    return total
+
+def chapter_key(path):
+    name = os.path.basename(path)[:-3]
+    date, _, title = name.partition(' ')
+    m = SERIES_RE.match(title)
+    if m:
+        return (date, m.group(1).strip(), roman_value(m.group(2)), title)
+    return (date, title, 0, title)
+
 # ---------- build ----------
-files = sorted(f for f in glob.glob(os.path.join(ARTICLES, '[0-9]' * 8 + ' *.md'))
-               if _a.date_from <= os.path.basename(f)[:8] <= _a.date_to)
+files = sorted((f for f in glob.glob(os.path.join(ARTICLES, '[0-9]' * 8 + ' *.md'))
+                if _a.date_from <= os.path.basename(f)[:8] <= _a.date_to), key=chapter_key)
 if not files:
     sys.exit('no articles matched')
 chapters = []
